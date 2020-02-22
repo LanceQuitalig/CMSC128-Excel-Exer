@@ -39,6 +39,31 @@ server <- function(input, output, session) {
             rv_data$data = FixData(df)
         }
     }
+
+    observeEvent(input$login, {
+        if (input$user == "Username") output$status <- renderText("ERROR 403: Enter a username.")
+        else if (input$pass == "" || input$pass == " " || input$pass == "Password") output$status <- renderText("ERROR 404: Enter a password.")
+        else {
+            rowIndex = FindUser(input$user, rv_data$data)
+            if (rowIndex[1]) {
+                if (CheckPass(input$pass, rv_data$data, rowIndex)) {
+                    output$status <- renderText({paste("WELCOME ", input$user, sep = "")})
+                } else output$status <- renderText("ERROR 404: Invalid Password")
+            } else output$status <- renderText("ERROR 405: Invalid Username")
+        }
+    })
+
+    observeEvent(input$signup, {
+        if (input$user == "Username") output$status <- renderText("ERROR 403: Enter a username.")
+        else if (input$pass == "" || input$pass == " " || input$pass == "Password") output$status <- renderText("ERROR 404: Enter a password.")
+        else {
+            rowIndex = FindUser(input$user, rv_data$data)
+            if (!rowIndex[1]) {
+                output$status <- renderText("Sign-up Successful")
+                rv_data$data = Signup(input$user, input$pass, rv_data$data)
+            } else output$status <- renderText("ERROR 406: Username already exists")
+        }
+    })
 }
 
 shinyApp(ui = ui, server = server)
