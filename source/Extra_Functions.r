@@ -14,3 +14,28 @@ FixData <- function(dataFrame) {
     rownames(resultDF) = c()
     return(resultDF)
 }
+
+FindUser <- function(username, dataFrame) {
+    y = length(dataFrame[, 1])
+    rowIndex = c(FALSE, 0)
+
+    for (row in 1 : y) {
+        if (dataFrame[row, 1] == username) {
+            rowIndex[1] = TRUE
+            rowIndex[2] = row
+            break
+        }
+    } return(rowIndex)
+}
+
+CheeckPass <- function(password, dataFrame, rowIndex) {
+    if (dataFrame[rowIndex[2], 2] == password) return(TRUE)
+    return(FALSE)
+}
+
+Signup <- function(username, password, dataFrame) {
+    result = rbind(dataFrame, c(username, password))
+    rownames(result) = c()
+    colnames(result) = c("username", "password")
+    return(result)
+} 
