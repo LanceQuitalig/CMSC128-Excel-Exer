@@ -25,7 +25,8 @@ FindUser <- function(username, dataFrame) {
             rowIndex[2] = row
             break
         }
-    } return(rowIndex)
+    } 
+    return(rowIndex)
 }
 
 CheeckPass <- function(password, dataFrame, rowIndex) {

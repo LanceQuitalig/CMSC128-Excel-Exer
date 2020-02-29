@@ -64,7 +64,7 @@ server <- function(input, output, session) {
             } else output$status <- renderText("ERROR 406: Username already exists")
         }
     })
-
+    
     session$onSessionEnded(function() {
         temp = isolate(rv_data$data)
         write.xlsx(temp, file = "..\\imports\\data.xlsx", row.names = FALSE)
