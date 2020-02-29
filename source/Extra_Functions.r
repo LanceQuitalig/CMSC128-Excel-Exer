@@ -5,6 +5,8 @@ FixData <- function(dataFrame) {
     resultDF = 0
     tempDF = c(" ", " ")
 
+    print(dataFrame)
+
     for (row in 1 : y) {
         tempDF = c(" ", " ")
         for (col in 1 : x) tempDF[col] = as.character(dataFrame[[col]][row])
@@ -29,7 +31,7 @@ FindUser <- function(username, dataFrame) {
     return(rowIndex)
 }
 
-CheeckPass <- function(password, dataFrame, rowIndex) {
+CheckPass <- function(password, dataFrame, rowIndex) {
     if (dataFrame[rowIndex[2], 2] == password) return(TRUE)
     return(FALSE)
 }

@@ -16,7 +16,16 @@ ui <- fluidPage(
             actionButton("signup", "Sign Up"),
             actionButton("login", "Log In")
         ),
-        mainPanel()
+        mainPanel(
+            wellPanel(
+                tableOutput("data"),
+                hr(),
+                helpText("The database updates in real time as more users are introduced.")
+            ),
+            tags$style("hr {
+			    border: 1px solid #333333;
+			}"),
+        )
     )
 ) 
 
@@ -25,9 +34,9 @@ ui <- fluidPage(
 server <- function(input, output, session) {
     rv_data <- reactiveValues(data = NULL)
 
-    if (!file.exists("..\\imports\\data.xlsx")) rv_data = c(" ", " ")
+    if (!file.exists("..\\imports\\data.csv")) rv_data$data = c(" ", " ")
     else {
-        df = read.xlsx2("..\\imports\\data.xlsx", sheetName = "Sheet1")
+        df = read.csv("..\\imports\\data.csv")
         if (length(df) != 2){
             output$status <- renderText("ERROR 401: \nPlease recheck the imported xlsx file. The file must only contain 2 columns!.")
             rv_data$data = c(" ", " ")
@@ -38,8 +47,9 @@ server <- function(input, output, session) {
             source("Extra_Functions.r")
             rv_data$data = FixData(df)
         }
+        output$data <- renderTable(rv_data$data, striped = TRUE, bordered = TRUE, align = 'c', width = "100%")
     }
-
+    
     observeEvent(input$login, {
         if (input$user == "Username") output$status <- renderText("ERROR 403: Enter a username.")
         else if (input$pass == "" || input$pass == " " || input$pass == "Password") output$status <- renderText("ERROR 404: Enter a password.")
@@ -67,7 +77,7 @@ server <- function(input, output, session) {
     
     session$onSessionEnded(function() {
         temp = isolate(rv_data$data)
-        write.xlsx(temp, file = "..\\imports\\data.xlsx", row.names = FALSE)
+        write.csv(temp, file = "..\\imports\\data.csv", row.names = FALSE)
         stopApp()
     })
 }
