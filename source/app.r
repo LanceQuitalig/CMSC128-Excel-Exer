@@ -1,4 +1,5 @@
-require(xlsx)
+install.packages("shiny")
+
 library(shiny)
 
 # UI function
@@ -27,13 +28,13 @@ ui <- fluidPage(
 			}"),
         )
     )
-) 
+)
 
 # Server function
 
 server <- function(input, output, session) {
     rv_data <- reactiveValues(data = NULL)
-
+    
     if (!file.exists("..\\imports\\data.csv")) rv_data$data = c(" ", " ")
     else {
         df = read.csv("..\\imports\\data.csv")
@@ -62,7 +63,7 @@ server <- function(input, output, session) {
             } else output$status <- renderText("ERROR 405: Invalid Username")
         }
     })
-
+    
     observeEvent(input$signup, {
         if (input$user == "Username") output$status <- renderText("ERROR 403: Enter a username.")
         else if (input$pass == "" || input$pass == " " || input$pass == "Password") output$status <- renderText("ERROR 404: Enter a password.")
